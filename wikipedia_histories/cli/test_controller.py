@@ -48,13 +48,13 @@ class TestWikipediaHistoriesController(unittest.TestCase):
 
     def test_controller_extracts_include_text_option_long(self) -> None:
         title = "Another title"
-        kw = "--include_text"
+        kw = "--no_text"
         self.controller.process_arguments([title, kw])
         self.assertFalse(self.mock_use_case.request.include_text)
 
     def test_controller_extracts_include_text_option_short(self) -> None:
         title = "Another title"
-        kw = "-i"
+        kw = "-n"
         self.controller.process_arguments([title, kw])
         self.assertFalse(self.mock_use_case.request.include_text)
 
@@ -71,7 +71,7 @@ class TestWikipediaHistoriesController(unittest.TestCase):
         domain = "my_domain"
         kw_file = "--to_file"
         file = "my_file.csv"
-        kw_text = "-i"
+        kw_text = "-n"
         self.controller.process_arguments(
             [kw_text, kw_domain, domain, kw_file, file, title]
         )

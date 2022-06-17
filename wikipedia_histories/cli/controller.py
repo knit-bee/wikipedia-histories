@@ -28,8 +28,8 @@ multiple words, wrap them in quotations marks, e.g. "Golden swallow", or connect
             type=str,
         )
         parser.add_argument(
-            "--include_text",
-            "-i",
+            "--no_text",
+            "-n",
             help="""Do not extract texts
 from the revision history. This likely increases processing speed. If you're
 mainly interested in the meta data, consider using this option.""",
@@ -47,7 +47,7 @@ mainly interested in the meta data, consider using this option.""",
             Request(
                 title=args.title,
                 domain=args.domain,
-                include_text=args.include_text,
+                include_text=args.no_text,
                 output=args.to_file,
             )
         )
