@@ -19,7 +19,9 @@ class WikipediaHistoriesUseCase(Protocol):
 
 class WikipediaHistoriesUseCaseImpl:
     def process(self, request: Request) -> None:
-        data = get_history(request.title, include_text=request.include_text)
+        data = get_history(
+            request.title, include_text=request.include_text, domain=request.domain
+        )
         if request.output:
             df = to_df(data)
             df.to_csv(request.output)
