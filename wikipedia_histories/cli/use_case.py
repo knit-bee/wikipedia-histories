@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Protocol
 
+from wikipedia_histories.get_histories import get_history, to_df
+
 
 @dataclass
 class Request:
@@ -17,4 +19,7 @@ class WikipediaHistoriesUseCase(Protocol):
 
 class WikipediaHistoriesUseCaseImpl:
     def process(self, request: Request) -> None:
-        pass
+        data = get_history(request.title, include_text=request.include_text)
+        if request.output:
+            df = to_df(data)
+            df.to_csv(request.output)
