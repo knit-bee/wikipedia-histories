@@ -107,7 +107,7 @@ def get_ratings(talk):
     return ratings
 
 
-async def get_text(revid, attempts=0, lang_code="en"):
+async def get_text(revid, attempts=0, lang_code="en", output=None):
     """
     Pull plain text representation of a revision from API
     Parameters:
@@ -131,7 +131,9 @@ async def get_text(revid, attempts=0, lang_code="en"):
         if attempts == 10:
             return -1
         # If there's a server error, just re-send the request until the server complies
-        return await get_text(revid, attempts=attempts + 1, lang_code=lang_code)
+        return await get_text(
+            revid, attempts=attempts + 1, lang_code=lang_code, output=output
+        )
     # Check if page was deleted (deleted pages have no text and are therefore un-parsable)
     try:
         raw_html = response["parse"]["text"]["*"]
@@ -145,13 +147,15 @@ async def get_text(revid, attempts=0, lang_code="en"):
     for paragraph in text:
         paragraphs.append(paragraph.text_content())
 
+    if output == "split":
+        return paragraphs
     # Put everything together
     cur = "".join(paragraphs)
 
     return cur
 
 
-async def get_texts(revids, lang_code="en"):
+async def get_texts(revids, lang_code="en", output=None):
     """
     Get the text of articles given the list of revision ids
 
@@ -167,12 +171,15 @@ async def get_texts(revids, lang_code="en"):
     sema = 100
     for i in range(0, revids.__len__(), +sema):
         texts += await asyncio.gather(
-            *(get_text(revid, lang_code=lang_code) for revid in revids[i : (i + sema)])
+            *(
+                get_text(revid, lang_code=lang_code, output=output)
+                for revid in revids[i : (i + sema)]
+            )
         )
     return texts
 
 
-def get_history(title, include_text=True, domain="en.wikipedia.org"):
+def get_history(title, include_text=True, domain="en.wikipedia.org", output=None):
     """
     Collects everything and returns a list of Change objects
 
@@ -210,7 +217,7 @@ def get_history(title, include_text=True, domain="en.wikipedia.org"):
     # Get the text of the revisions. Performance is improved if this isn't done, but you lose the revisions
     if include_text:
         lang_code = extract_lang_code_from_domain(domain)
-        texts = asyncio.run(get_texts(revids, lang_code))
+        texts = asyncio.run(get_texts(revids, lang_code, output=output))
     else:
         texts = [""] * len(metadata)
 
