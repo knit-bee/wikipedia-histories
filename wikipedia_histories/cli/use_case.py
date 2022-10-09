@@ -9,6 +9,7 @@ class Request:
     title: str
     domain: str
     include_text: bool = True
+    split: bool = False
     output: str = ""
 
 

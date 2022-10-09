@@ -42,12 +42,22 @@ mainly interested in the meta data, consider using this option.""",
             default="",
             type=str,
         )
+        parser.add_argument(
+            "--split",
+            "-s",
+            help="""Return text for each revision split into paragraphs as they
+            appear in the html document. This returns a list of string for a single revision
+            instead of joining the paragraphs together into a single string.""",
+            default=False,
+            action="store_true",
+        )
         args = parser.parse_args(arguments)
         self._use_case.process(
             Request(
                 title=args.title,
                 domain=args.domain,
                 include_text=args.no_text,
+                split=args.split,
                 output=args.to_file,
             )
         )

@@ -29,6 +29,7 @@ class TestWikipediaHistoriesController(unittest.TestCase):
         self.controller.process_arguments([title])
         self.assertEqual(self.mock_use_case.request.domain, "en.wikipedia.org")
         self.assertTrue(self.mock_use_case.request.include_text)
+        self.assertFalse(self.mock_use_case.request.split)
 
     def test_controller_extracts_title_and_domain_long(self) -> None:
         title = "My title"
@@ -79,3 +80,15 @@ class TestWikipediaHistoriesController(unittest.TestCase):
             self.mock_use_case.request,
             Request(title=title, domain=domain, output=file, include_text=False),
         )
+
+    def test_controller_extracts_split_option(self) -> None:
+        title = "Title"
+        kw = "--split"
+        self.controller.process_arguments([title, kw])
+        self.assertTrue(self.mock_use_case.request.split)
+
+    def test_controller_extracts_split_option_short(self) -> None:
+        title = "Title"
+        kw = "-s"
+        self.controller.process_arguments([title, kw])
+        self.assertTrue(self.mock_use_case.request.split)

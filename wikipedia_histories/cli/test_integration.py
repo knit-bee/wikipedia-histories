@@ -23,3 +23,12 @@ def test_callable_from_cl_with_domain() -> None:
         capture_output=True,
     )
     assert process.returncode == 0
+
+
+def test_callable_from_cl_with_split_option() -> None:
+    process = subprocess.run(
+        ["wikipedia-histories", "Crazy Mohan", "--no_text", "-s"],
+        check=True,
+        capture_output=True,
+    )
+    assert process.returncode == 0
